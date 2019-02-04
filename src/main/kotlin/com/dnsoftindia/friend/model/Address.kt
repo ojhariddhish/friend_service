@@ -1,7 +1,9 @@
 package com.dnsoftindia.friend.model
 
-import javax.persistence.Embeddable
+import javax.persistence.*
 
-@Embeddable
-data class Address(val street: String, val city: String) {
+@Entity
+data class Address(@Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Int,
+        val street: String,
+        val city: String) {
 }

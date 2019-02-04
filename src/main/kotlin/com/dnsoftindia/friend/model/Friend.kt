@@ -10,5 +10,5 @@ data class Friend(@Id @GeneratedValue(strategy = GenerationType.AUTO) val id: In
                   @JsonProperty("last-name") val lastName: String,
                   val age: Int,
                   @JsonIgnore val married: Boolean,
-                  @Embedded val address: Address) {
+                  @OneToMany(cascade = arrayOf(CascadeType.ALL)) val addresses: List<Address>) {
 }

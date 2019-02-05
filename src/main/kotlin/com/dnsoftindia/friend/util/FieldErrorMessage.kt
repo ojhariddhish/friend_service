@@ -1,5 +1,5 @@
 package com.dnsoftindia.friend.util
 
-class FieldErrorMessage {
+data class FieldErrorMessage(val field: String, val message: String?) {
 
 }

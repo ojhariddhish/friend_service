@@ -3,11 +3,15 @@ package com.dnsoftindia.friend.controller
 import com.dnsoftindia.friend.model.Friend
 import com.dnsoftindia.friend.service.FriendService
 import com.dnsoftindia.friend.util.ErrorMessage
+import com.dnsoftindia.friend.util.FieldErrorMessage
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import java.util.stream.Collectors
+import javax.validation.Valid
 import javax.validation.ValidationException
 
 @RestController
@@ -17,16 +21,9 @@ class FriendController {
     lateinit var friendService: FriendService
 
     @PostMapping("/friend")
-    fun create(@RequestBody friend: Friend): Friend {
-        if (friend.id == 0 && friend.firstName != null && friend.lastName != null) {
-            return friendService.save(friend)
-        }
-        else {
-            throw ValidationException("Friend cannot be added at this time!")
-        }
+    fun create(@Valid @RequestBody friend: Friend): Friend {
+        return friendService.save(friend)
     }
-
-
 
     @GetMapping("/friend")
     fun read(): Iterable<Friend> {
@@ -72,6 +69,13 @@ class FriendController {
 
     }
 
-
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun exceptionHandler(e: MethodArgumentNotValidException): List<FieldErrorMessage> {
+        val fieldErrors = e.bindingResult.fieldErrors
+        return fieldErrors.stream().map {
+            FieldErrorMessage(it.field, it.defaultMessage)
+        }.collect(Collectors.toList())
+    }
 
 }

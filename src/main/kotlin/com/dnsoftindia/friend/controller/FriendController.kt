@@ -2,9 +2,13 @@ package com.dnsoftindia.friend.controller
 
 import com.dnsoftindia.friend.model.Friend
 import com.dnsoftindia.friend.service.FriendService
+import com.dnsoftindia.friend.util.ErrorMessage
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
+import javax.validation.ValidationException
 
 @RestController
 class FriendController {
@@ -14,8 +18,15 @@ class FriendController {
 
     @PostMapping("/friend")
     fun create(@RequestBody friend: Friend): Friend {
-        return friendService.save(friend)
+        if (friend.id == 0 && friend.firstName != null && friend.lastName != null) {
+            return friendService.save(friend)
+        }
+        else {
+            throw ValidationException("Friend cannot be added at this time!")
+        }
     }
+
+
 
     @GetMapping("/friend")
     fun read(): Iterable<Friend> {
@@ -23,8 +34,13 @@ class FriendController {
     }
 
     @PutMapping("/friend")
-    fun update(@RequestBody friend: Friend): Friend {
-        return friendService.save(friend)
+    fun update(@RequestBody friend: Friend): ResponseEntity<Friend> {
+        if (friendService.findById(friend.id).isPresent) {
+            return ResponseEntity(friendService.save(friend), HttpStatus.OK)
+        }
+        else {
+            return ResponseEntity(friend, HttpStatus.BAD_REQUEST)
+        }
     }
 
     @DeleteMapping("/friend/{id}")

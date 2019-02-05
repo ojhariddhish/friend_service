@@ -6,9 +6,9 @@ import javax.persistence.*
 
 @Entity
 data class Friend(@Id @GeneratedValue(strategy = GenerationType.AUTO) val id: Int,
-                  @JsonProperty("first-name") val firstName: String,
-                  @JsonProperty("last-name") val lastName: String,
+                  @JsonProperty("first-name") val firstName: String?,
+                  @JsonProperty("last-name") val lastName: String?,
                   val age: Int,
-                  @JsonIgnore val married: Boolean,
-                  @OneToMany(cascade = arrayOf(CascadeType.ALL)) val addresses: List<Address>) {
+                  @JsonIgnore val married: Boolean?,
+                  @OneToMany(cascade = arrayOf(CascadeType.ALL)) val addresses: List<Address>?) {
 }

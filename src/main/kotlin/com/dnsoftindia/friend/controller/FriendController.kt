@@ -78,4 +78,15 @@ class FriendController {
         }.collect(Collectors.toList())
     }
 
+    @GetMapping("/wrong")
+    fun somethingWrong() {
+        throw ValidationException("Something is wrong")
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ValidationException::class)
+    fun exceptionHandler(e: ValidationException): String? {
+        return e.message
+    }
+
 }
